@@ -1,0 +1,34 @@
+{
+  "name": "claude-slack-bot",
+  "version": "1.0.0",
+  "description": "Claude Slack Bot - Real-time Slack integration using Bolt and Socket Mode",
+  "type": "module",
+  "main": "dist/bolt-app.js",
+  "scripts": {
+    "start": "npm run build && node dist/bot.js",
+    "build": "esbuild src/bolt-app.ts --bundle --platform=node --format=esm --outfile=dist/bot.js --external:@slack/bolt --external:dotenv --external:ws --external:rss-parser --log-level=silent",
+    "dev": "tsx watch src/bolt-app.ts",
+    "restart": "pkill -f 'node dist/bot.js' 2>/dev/null; npm run start",
+    "format": "prettier --write src/**/*.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@slack/bolt": "^4.1.0",
+    "croner": "^9.1.0",
+    "docx": "^9.5.2",
+    "dotenv": "^16.4.7",
+    "franc": "^6.2.0",
+    "rss-parser": "^3.13.0",
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.18.1",
+    "esbuild": "^0.27.2",
+    "prettier": "^3.3.3",
+    "tsx": "^4.19.1",
+    "typescript": "^5.7.2",
+    "vitest": "^4.0.18"
+  }
+}

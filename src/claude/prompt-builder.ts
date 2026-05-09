@@ -10,6 +10,22 @@ import type { DownloadedFile, CanvasInfo } from "../types/index.js";
 import { resolve as pathResolve } from "node:path";
 import { ROOT_DIR } from "../config/paths.js";
 
+// GitHub second-brain context instruction
+function getGitHubContextSection(): string {
+	return `## GitHub Knowledge Base
+
+The GitHub repository *mwhchan/TheForge* is our team's second brain — it contains our latest documentation, project updates, decisions, and notes.
+
+Before answering any question, follow these steps:
+1. Fetch the root CLAUDE.md file first: \`get_file_contents({ owner: "mwhchan", repo: "TheForge", path: "CLAUDE.md" })\`
+2. CLAUDE.md is the index — it tells you which files and directories are relevant to which topics
+3. Based on the user's question, fetch only the specific files the index points you to
+
+Always cite the file path when you reference something from the repo (e.g. "According to \`docs/architecture.md\` in TheForge...").
+
+`;
+}
+
 // Helper to get current date context for news filtering
 function getCurrentDateContext(): string {
 	const now = new Date();
@@ -191,7 +207,9 @@ Then confirm: "Saved to your personal memory!" or "Updated your personal memory!
 	const skillsDir = pathResolve(ROOT_DIR, ".claude/skills");
 	const skillsSection = buildSkillsPromptSection(skillsDir);
 
-	const prompt = `${skillsSection}${userContextRefs}${newUserContext}${metadataSection}${dateContext}${googleUrlsContext}${attachmentsContext}${unfurlContext}${historySection}${userName} just said:
+	const githubContext = getGitHubContextSection();
+
+	const prompt = `${skillsSection}${userContextRefs}${newUserContext}${metadataSection}${dateContext}${githubContext}${googleUrlsContext}${attachmentsContext}${unfurlContext}${historySection}${userName} just said:
 "${text}"
 
 Reply naturally and conversationally.${hasHistory ? " Take into account the conversation history above." : ""}`;
@@ -384,10 +402,12 @@ ${canvasSections}
 	const skillsDir = pathResolve(ROOT_DIR, ".claude/skills");
 	const skillsSection = buildSkillsPromptSection(skillsDir);
 
+	const githubContext = getGitHubContextSection();
+
 	// Direct @mention or DM - always reply
 	const endingInstruction = `Reply naturally and conversationally to ${userName}.${hasHistory ? " Take into account the conversation history above." : ""} If the question relates to shared files, read them.`;
 
-	const prompt = `${skillsSection}${fileRefsSection}${newUserContext}${metadataSection}${dateContext}${googleUrlsContext}${slackFilesContext}${canvasContext}${unfurlContext}${historySection}${userName} just said:
+	const prompt = `${skillsSection}${fileRefsSection}${newUserContext}${metadataSection}${dateContext}${githubContext}${googleUrlsContext}${slackFilesContext}${canvasContext}${unfurlContext}${historySection}${userName} just said:
 "${text}"
 
 ${endingInstruction}`;

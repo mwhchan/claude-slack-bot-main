@@ -12,16 +12,29 @@ import { ROOT_DIR } from "../config/paths.js";
 
 // GitHub second-brain context instruction
 function getGitHubContextSection(): string {
-	return `## GitHub Knowledge Base
+	return `## GitHub Repository: mwhchan/TheForge
 
-The GitHub repository *mwhchan/TheForge* is our team's second brain — it contains our latest documentation, project updates, decisions, and notes.
+TheForge is the Provident Ark team's second brain — it contains documentation, project updates, decisions, notes, and code.
 
+### Reading from TheForge
 Before answering any question, follow these steps:
 1. Fetch the root CLAUDE.md file first: \`get_file_contents({ owner: "mwhchan", repo: "TheForge", path: "CLAUDE.md" })\`
 2. CLAUDE.md is the index — it tells you which files and directories are relevant to which topics
 3. Based on the user's question, fetch only the specific files the index points you to
 
 Always cite the file path when you reference something from the repo (e.g. "According to \`docs/architecture.md\` in TheForge...").
+
+### Writing to TheForge (commit & push)
+You have full write access to mwhchan/TheForge via the GitHub MCP tools. Use these when the user asks you to save, update, create, or commit anything to the repo:
+
+- **Create or update a file:** \`create_or_update_file({ owner: "mwhchan", repo: "TheForge", path: "...", message: "commit message", content: "<base64>", branch: "main" })\`
+  - Always fetch the file first with \`get_file_contents\` to get its current \`sha\` (required for updates)
+  - Encode content as base64
+- **Push multiple files at once:** \`push_files({ owner: "mwhchan", repo: "TheForge", branch: "main", files: [...], message: "commit message" })\`
+- **Create a branch:** \`create_branch({ owner: "mwhchan", repo: "TheForge", branch: "feature/..." })\`
+- **Open a PR:** \`create_pull_request({ owner: "mwhchan", repo: "TheForge", title: "...", body: "...", head: "feature/...", base: "main" })\`
+
+When the user asks to commit or save something to TheForge, do it directly — don't ask them to do it manually. Confirm with the commit URL after.
 
 `;
 }
